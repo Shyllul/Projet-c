@@ -12,6 +12,7 @@ PROJET_C/
 ├── project.exe          - Executable Windows
 ├── docs/       - Documents du projet
 │   └── Phase_1.pdf
+│   └── Phase_2.pdf
 └── README.md            - Ce fichier
 ```
 
@@ -137,4 +138,5 @@ Signe = +1
 - Tous les tests passent avec succes
 
 - La gestion memoire est correcte (pas de fuites)
+
 
