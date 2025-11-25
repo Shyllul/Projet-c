@@ -12,10 +12,10 @@ PROJET_C/
 ├── bigbinary.c          - Implementations des fonctions
 ├── main.c               - Programme principal avec tests
 ├── project.exe          - Executable Windows
-├── docs/       - Documents du projet
+├── docs/                - Documents du projet
 │   └── Phase_1.pdf
 │   └── Phase_2.pdf
-└── README.md            - Ce fichier
+└── README.md            
 ```
 
 ## COMPILATION ET EXECUTION
