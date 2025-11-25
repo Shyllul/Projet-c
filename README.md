@@ -1,6 +1,8 @@
 # Projet BigBinary
 
-Bibliotheque C pour manipuler des grands entiers en binaire
+## Introduction
+
+Bienvenue sur mon Projet en C appelé **BigBinary**, une bibliothèque C développée dans le cadre de mon cursus d'ingénieur à l'ESIEA. Ce projet de programmation vise à développer une (petite) bibliothèque en langage C permettant la manipulation en binaire de "grands entiers" stockés dans des tableaux et tableaux dynamiques pour mieux gérer la mémoire.
 
 ## ORGANISATION DU PROJET
 
@@ -136,7 +138,6 @@ Signe = +1
 - L'addition fonctionne uniquement avec A et B positifs ou nuls
 - La soustraction necessite A >= B
 - Tous les tests passent avec succes
-
 - La gestion memoire est correcte (pas de fuites)
 
 
