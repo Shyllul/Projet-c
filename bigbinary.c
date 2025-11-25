@@ -244,5 +244,3 @@ bool inferieurBigBinary(BigBinary A, BigBinary B) {
     
     return resultat;
 }
-
-//test
