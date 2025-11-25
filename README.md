@@ -1,4 +1,4 @@
-# Projet BigBinary - Phase 1
+# Projet BigBinary
 
 Bibliotheque C pour manipuler des grands entiers en binaire
 
@@ -137,3 +137,4 @@ Signe = +1
 - Tous les tests passent avec succes
 
 - La gestion memoire est correcte (pas de fuites)
+
