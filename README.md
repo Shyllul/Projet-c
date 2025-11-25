@@ -2,8 +2,6 @@
 
 Bibliotheque C pour manipuler des grands entiers en binaire
 
-================================================================================
-
 ## ORGANISATION DU PROJET
 
 ```
@@ -17,8 +15,6 @@ PROJET_C/
 └── README.md            - Ce fichier
 ```
 
-================================================================================
-
 ## COMPILATION ET EXECUTION
 
 ### Compiler
@@ -26,8 +22,6 @@ gcc main.c bigbinary.c -o project.exe
 
 ### Executer
 ./project.exe
-
-================================================================================
 
 ## DESCRIPTION DES FICHIERS
 
@@ -46,7 +40,6 @@ gcc main.c bigbinary.c -o project.exe
 - Tests de toutes les fonctionnalites
 - Affichage des resultats
 
-================================================================================
 
 ## FONCTIONNALITES IMPLEMENTEES (Phase 1)
 
@@ -61,7 +54,6 @@ gcc main.c bigbinary.c -o project.exe
 | egalBigBinary()                   | Teste si A == B              | [OK]      |
 | inferieurBigBinary()              | Teste si A < B               | [OK]      |
 
-================================================================================
 
 ## TESTS INCLUS
 
@@ -89,7 +81,6 @@ TEST 5 : Comparaison
   - 1011 < 101 → false
   - 101 < 101 → false
 
-================================================================================
 
 ## STRUCTURE BIGBINARY
 
@@ -120,8 +111,6 @@ Taille = 7
 Signe = +1
 ```
 
-================================================================================
-
 ## PHASES DU PROJET
 
 ### Phase 1 (Terminee)
@@ -138,7 +127,6 @@ Signe = +1
 - [ ] Chiffrement RSA
 - [ ] Dechiffrement RSA
 
-================================================================================
 
 ## REMARQUES IMPORTANTES
 
@@ -147,4 +135,5 @@ Signe = +1
 - L'addition fonctionne uniquement avec A et B positifs ou nuls
 - La soustraction necessite A >= B
 - Tous les tests passent avec succes
+
 - La gestion memoire est correcte (pas de fuites)
