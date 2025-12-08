@@ -123,7 +123,7 @@ Le programme `main.c` exécute 6 suites de tests :
 - **Addition/Soustraction** : Algorithme "naïf" (méthode de l'école primaire)
 - **PGCD** : Algorithme binaire d'Euclide (optimisé pour le binaire, sans division)
 - **Modulo** : Basé sur la soustraction successive avec décalage
-- **Mémoire** : Gestion correcte, pas de fuites (vérifiable avec Valgrind)
+- **Mémoire** : Gestion correcte, pas de fuites
 - **Restrictions** : 
   - L'addition fonctionne uniquement avec A et B positifs ou nuls
   - La soustraction nécessite A ≥ B
