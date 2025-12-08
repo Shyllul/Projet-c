@@ -1,11 +1,18 @@
 # Projet BigBinary
 
+<<<<<<< HEAD
 Bibliothèque C pour manipuler des grands entiers en binaire avec des opérations arithmétiques avancées.
+=======
+## Introduction
+
+Bienvenue sur mon Projet en C appelé **BigBinary**, une bibliothèque C développée dans le cadre de mon cursus d'ingénieur à l'ESIEA. Ce projet de programmation vise à développer une (petite) bibliothèque en langage C permettant la manipulation en binaire de "grands entiers" stockés dans des tableaux et tableaux dynamiques pour mieux gérer la mémoire.
+>>>>>>> 30ed3cfe45ffe18c317eeb67cfddf4935e620566
 
 ## Organisation du Projet
 
 ```
 PROJET_C/
+<<<<<<< HEAD
 ├── bigbinary.h     - Déclarations (structures et prototypes)
 ├── bigbinary.c     - Implémentation des fonctions
 ├── main.c          - Programme principal avec tests
@@ -14,6 +21,16 @@ PROJET_C/
 │   ├── Phase_1.pdf
 │   └── Phase_2.pdf
 └── README.md       - Ce fichier
+=======
+├── bigbinary.h          - Declarations (structures)
+├── bigbinary.c          - Implementations des fonctions
+├── main.c               - Programme principal avec tests
+├── project.exe          - Executable Windows
+├── docs/                - Documents du projet
+│   └── Phase_1.pdf
+│   └── Phase_2.pdf
+└── README.md            
+>>>>>>> 30ed3cfe45ffe18c317eeb67cfddf4935e620566
 ```
 
 ## Compilation et Exécution
@@ -118,11 +135,22 @@ Le programme `main.c` exécute 6 suites de tests :
 
 ## Remarques Importantes
 
+<<<<<<< HEAD
 - **Addition/Soustraction** : Algorithme "naïf" (méthode école primaire)
 - **PGCD** : Algorithme binaire d'Euclide (optimisé pour le binaire, sans division)
 - **Modulo** : Basé sur la soustraction successive avec décalage
 - **Mémoire** : Gestion correcte, pas de fuites (vérifiable avec Valgrind)
 - **Restrictions** : Les opérations arithmétiques nécessitent des opérandes positifs
+=======
+## REMARQUES IMPORTANTES
+
+- Les fonctions d'addition et soustraction utilisent l'algorithme "naif" 
+  (methode de l'ecole primaire)
+- L'addition fonctionne uniquement avec A et B positifs ou nuls
+- La soustraction necessite A >= B
+- Tous les tests passent avec succes
+- La gestion memoire est correcte (pas de fuites)
+>>>>>>> 30ed3cfe45ffe18c317eeb67cfddf4935e620566
 
 ## Auteur
 
