@@ -1,142 +1,129 @@
 # Projet BigBinary
 
-Bibliotheque C pour manipuler des grands entiers en binaire
+Bibliothèque C pour manipuler des grands entiers en binaire avec des opérations arithmétiques avancées.
 
-## ORGANISATION DU PROJET
+## Organisation du Projet
 
 ```
 PROJET_C/
-├── bigbinary.h          - Declarations (structures)
-├── bigbinary.c          - Implementations des fonctions
-├── main.c               - Programme principal avec tests
-├── project.exe          - Executable Windows
-├── docs/       - Documents du projet
-│   └── Phase_1.pdf
+├── bigbinary.h     - Déclarations (structures et prototypes)
+├── bigbinary.c     - Implémentation des fonctions
+├── main.c          - Programme principal avec tests
+├── project.exe     - Exécutable Windows
+├── docs/           - Documents du projet
+│   ├── Phase_1.pdf
 │   └── Phase_2.pdf
-└── README.md            - Ce fichier
+└── README.md       - Ce fichier
 ```
 
-## COMPILATION ET EXECUTION
+## Compilation et Exécution
 
-### Compiler
+```bash
+# Compiler
 gcc main.c bigbinary.c -o project.exe
 
-### Executer
+# Exécuter
 ./project.exe
+```
 
-## DESCRIPTION DES FICHIERS
-
-### bigbinary.h
-- Structure BigBinary
-- Prototypes de toutes les fonctions
-- A inclure dans les autres fichiers
-
-### bigbinary.c 
-- Implementation des fonctions
-- Algorithmes d'addition, soustraction
-- Fonctions de comparaison
-
-### main.c
-- Programme principal
-- Tests de toutes les fonctionnalites
-- Affichage des resultats
-
-
-## FONCTIONNALITES IMPLEMENTEES (Phase 1)
-
-| Fonction                          | Description                  | Statut    |
-|-----------------------------------|------------------------------|-----------|
-| initBigBinary()                   | Initialise un BigBinary vide | [OK]      |
-| libereBigBinary()                 | Libere la memoire            | [OK]      |
-| afficheBigBinary()                | Affiche le nombre binaire    | [OK]      |
-| creerBigBinaryDepuisChaine()      | Cree depuis "101010..."      | [OK]      |
-| additionBigBinary()               | Addition A + B               | [OK]      |
-| soustractionBigBinary()           | Soustraction A - B (A >= B)  | [OK]      |
-| egalBigBinary()                   | Teste si A == B              | [OK]      |
-| inferieurBigBinary()              | Teste si A < B               | [OK]      |
-
-
-## TESTS INCLUS
-
-Le programme main.c teste automatiquement :
-
-TEST 1 : Creation et affichage
-  - 1010011 (83 en decimal)
-  - 0
-  - -111 (-7 en decimal)
-
-TEST 2 : Addition
-  - 83 + 11 = 94 (1011110)
-  - 15 + 1 = 16 (10000)
-
-TEST 3 : Soustraction
-  - 83 - 11 = 72 (1001000)
-  - 8 - 3 = 5 (101)
-
-TEST 4 : Egalite
-  - 101 == 101 → true
-  - 101 == 1011 → false
-
-TEST 5 : Comparaison
-  - 101 < 1011 → true
-  - 1011 < 101 → false
-  - 101 < 101 → false
-
-
-## STRUCTURE BIGBINARY
+## Structure BigBinary
 
 ```c
+#define BASE 2
+
 typedef struct {
-    int *Tdigits;  // Tableau de bits (MSB a LSB)
-    int Taille;    // Nombre de bits
-    int Signe;     // +1 (positif), -1 (negatif), 0 (nul)
+    int *Tdigits;   // Tableau de bits (MSB à gauche, LSB à droite)
+    int Taille;     // Nombre de bits significatifs
+    int Signe;      // +1 (positif), -1 (négatif), 0 (nul)
 } BigBinary;
 ```
 
 ### Exemple : Le nombre 83
 
-En decimal : 83  
-En binaire : 1010011
-
-Representation en memoire :
 ```
-Tdigits[0] = 1  <- MSB (bit de poids fort)
-Tdigits[1] = 0
-Tdigits[2] = 1
-Tdigits[3] = 0
-Tdigits[4] = 0
-Tdigits[5] = 1
-Tdigits[6] = 1  <- LSB (bit de poids faible)
+Décimal : 83
+Binaire : 1010011
 
+Tdigits = [1, 0, 1, 0, 0, 1, 1]
+           ↑                 ↑
+          MSB               LSB
 Taille = 7
 Signe = +1
 ```
 
-## PHASES DU PROJET
+## Fonctionnalités Implémentées
 
-### Phase 1 (Terminee)
-- [X] Addition binaire
-- [X] Soustraction binaire
-- [X] Comparaisons (egal, inferieur)
+### Fonctions de Base
 
-### Phase 2 (A venir)
-- [ ] PGCD binaire d'Euclide
-- [ ] Modulo
-- [ ] Exponentiation modulaire
+| Fonction | Description |
+|----------|-------------|
+| `initBigBinary(taille, signe)` | Initialise un BigBinary vide |
+| `libereBigBinary(nb)` | Libère la mémoire |
+| `afficheBigBinary(nb)` | Affiche le nombre binaire |
+| `creerBigBinaryDepuisChaine(chaine)` | Crée depuis "101010..." |
+
+### Opérations Arithmétiques (Phase 1)
+
+| Fonction | Description | Exemple |
+|----------|-------------|---------|
+| `additionBigBinary(A, B)` | A + B | 10 + 3 = 13 |
+| `soustractionBigBinary(A, B)` | A - B (A ≥ B) | 10 - 3 = 7 |
+
+### Comparaisons (Phase 1)
+
+| Fonction | Description |
+|----------|-------------|
+| `Egal(A, B)` | Renvoit true si A == B, sinon false |
+| `Inferieur(A, B)` | Renvoit true si A < B, sinon false |
+
+### Fonctions Avancées (Phase 2)
+
+| Fonction | Description | Exemple |
+|----------|-------------|---------|
+| `BigBinary_PGCD(A, B)` | PGCD avec algorithme binaire d'Euclide | PGCD(48, 18) = 6 |
+| `BigBinary_mod(A, B)` | A mod B (reste) | 11 mod 3 = 2 |
+
+## Tests Inclus
+
+Le programme `main.c` exécute 6 suites de tests :
+
+| Test | Description | Exemples |
+|------|-------------|----------|
+| 1 | Création/Affichage | 83, 0, -7 |
+| 2 | Addition | 83+11=94, 15+1=16 |
+| 3 | Soustraction | 83-11=72, 8-3=5 |
+| 4 | Egal / Inferieur | Egal(5,5)=true, Inferieur(5,11)=true |
+| 5 | BigBinary_mod | 11 mod 3=2, 20 mod 6=2 |
+| 6 | BigBinary_PGCD | PGCD(48,18)=6, PGCD(21,14)=7 |
+
+## Phases du Projet
+
+### Phase 1 
+- [x] Structure BigBinary (avec Tdigits, Taille, Signe)
+- [x] Fonction d'initialisation (vide et depuis une chaîne binaire)
+- [x] Fonction d'affichage (afficheBigBinary)
+- [x] Fonction libereBigBinary pour éviter les fuites mémoire
+- [x] Fonction d'addition (algorithme "naïf")
+- [x] Fonction de soustraction (avec A ≥ B uniquement, algorithme "naïf")
+- [x] Fonctions de comparaison : Egal(A, B) et Inferieur(A, B)
+
+### Phase 2 
+- [x] BigBinary_PGCD(A, B) : Algorithme binaire d'Euclide
+- [x] BigBinary_mod(A, B) : Calcul du modulo
+- [ ] BigBinary_expMod(M, exp, mod) : Exponentiation modulaire rapide
 
 ### Phase 3 (Bonus)
-- [ ] Chiffrement RSA
-- [ ] Dechiffrement RSA
+- [ ] BigBinary_RSA_encrypt(message, e, n) : Chiffrement RSA
+- [ ] BigBinary_RSA_decrypt(cipher, d, n) : Déchiffrement RSA
 
+## Remarques Importantes
 
-## REMARQUES IMPORTANTES
+- **Addition/Soustraction** : Algorithme "naïf" (méthode école primaire)
+- **PGCD** : Algorithme binaire d'Euclide (optimisé pour le binaire, sans division)
+- **Modulo** : Basé sur la soustraction successive avec décalage
+- **Mémoire** : Gestion correcte, pas de fuites (vérifiable avec Valgrind)
+- **Restrictions** : Les opérations arithmétiques nécessitent des opérandes positifs
 
-- Les fonctions d'addition et soustraction utilisent l'algorithme "naif" 
-  (methode de l'ecole primaire)
-- L'addition fonctionne uniquement avec A et B positifs ou nuls
-- La soustraction necessite A >= B
-- Tous les tests passent avec succes
+## Auteur
 
-- La gestion memoire est correcte (pas de fuites)
-
-
+Projet réalisé dans le cadre d'un cours de programmation en C - ESIEA 3A S5.

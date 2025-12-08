@@ -1,208 +1,145 @@
+/**
+ * @file bigbinary.c
+ * @brief Implémentation des fonctions pour les grands nombres binaires
+ */
+
 #include "bigbinary.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// FONCTIONS DE BASE :
+/* ============================================================================
+ * FONCTIONS INTERNES (PRIVÉES)
+ * ============================================================================ */
 
-// Initialise un BigBinary vide
+/**
+ * Supprime les zéros non significatifs d'un BigBinary
+ * Retourne un nouveau BigBinary normalisé
+ */
+static BigBinary normaliserBigBinary(BigBinary nb) {
+    int premier = 0;
+    while (premier < nb.Taille && nb.Tdigits[premier] == 0) {
+        premier++;
+    }
+    
+    if (premier == nb.Taille) {
+        libereBigBinary(&nb);
+        return initBigBinary(0, 0);
+    }
+    
+    if (premier == 0) {
+        return nb;
+    }
+    
+    BigBinary resultat = initBigBinary(nb.Taille - premier, 1);
+    for (int i = 0; i < resultat.Taille; i++) {
+        resultat.Tdigits[i] = nb.Tdigits[premier + i];
+    }
+    
+    libereBigBinary(&nb);
+    return resultat;
+}
+
+/* ============================================================================
+ * FONCTIONS DE BASE
+ * ============================================================================ */
 
 BigBinary initBigBinary(int taille, int signe) {
     BigBinary nb;
     nb.Taille = taille;
     nb.Signe = signe;
-    nb.Tdigits = malloc(sizeof(int) * taille);
     
-    for (int i = 0; i < taille; ++i) {
-        nb.Tdigits[i] = 0;
+    if (taille > 0) {
+        nb.Tdigits = malloc(sizeof(int) * taille);
+        for (int i = 0; i < taille; i++) {
+            nb.Tdigits[i] = 0;
+        }
+    } else {
+        nb.Tdigits = NULL;
     }
     
     return nb;
 }
 
-
-// Libère la mémoire d'un BigBinary
-
 void libereBigBinary(BigBinary *nb) {
     if (nb->Tdigits != NULL) {
         free(nb->Tdigits);
+        nb->Tdigits = NULL;
     }
-    nb->Tdigits = NULL;
     nb->Taille = 0;
     nb->Signe = 0;
 }
 
-// Affiche un BigBinary
+void libereMultipleBigBinary(BigBinary *tableau[], int taille) {
+    for (int i = 0; i < taille; i++) {
+        libereBigBinary(tableau[i]);
+    }
+}
 
 void afficheBigBinary(BigBinary nb) {
-    if (nb.Signe == -1) printf("-");
+    if (nb.Signe == -1) {
+        printf("-");
+    }
     
     if (nb.Signe == 0 || nb.Taille == 0) {
         printf("0\n");
         return;
     }
     
-    for (int i = 0; i < nb.Taille; ++i) {
+    for (int i = 0; i < nb.Taille; i++) {
         printf("%d", nb.Tdigits[i]);
     }
     printf("\n");
 }
 
-// Crée un BigBinary depuis une chaîne binaire
-
 BigBinary creerBigBinaryDepuisChaine(const char *chaine) {
-    BigBinary nb;
     int n = strlen(chaine);
-    nb.Taille = 0;
     
-    // Compter les bits valides
-    for (int i = 0; i < n; ++i) {
+    int nbBits = 0;
+    for (int i = 0; i < n; i++) {
         if (chaine[i] == '0' || chaine[i] == '1') {
-            nb.Taille++;
+            nbBits++;
         }
     }
     
-    nb.Tdigits = malloc(sizeof(int) * nb.Taille);
-    nb.Signe = +1;
+    BigBinary nb = initBigBinary(nbBits, 1);
     int index = 0;
-    int tousZeros = 1;
-
-    // Remplir le tableau
-    for (int i = 0; i < n; ++i) {
+    bool tousZeros = true;
+    
+    for (int i = 0; i < n; i++) {
         if (chaine[i] == '0' || chaine[i] == '1') {
             nb.Tdigits[index] = chaine[i] - '0';
-            if (nb.Tdigits[index] == 1) tousZeros = 0;
+            if (nb.Tdigits[index] == 1) {
+                tousZeros = false;
+            }
             index++;
         }
     }
-
-    if (tousZeros) nb.Signe = 0;
+    
+    if (tousZeros) {
+        nb.Signe = 0;
+    }
     
     return nb;
 }
 
-// OPÉRATIONS ARITHMÉTIQUES
-
-/*
- * Addition : A + B
- * Restriction : A, B positifs ou nuls
- */
-BigBinary additionBigBinary(BigBinary A, BigBinary B) {
-    // Cas spéciaux
-    if (A.Signe == 0) {
-        BigBinary result = initBigBinary(B.Taille, B.Signe);
-        for (int i = 0; i < B.Taille; i++) {
-            result.Tdigits[i] = B.Tdigits[i];
-        }
-        return result;
-    }
-    
-    if (B.Signe == 0) {
-        BigBinary result = initBigBinary(A.Taille, A.Signe);
-        for (int i = 0; i < A.Taille; i++) {
-            result.Tdigits[i] = A.Tdigits[i];
-        }
-        return result;
-    }
-    
-    // Addition de droite à gauche
-    int maxTaille = (A.Taille > B.Taille) ? A.Taille : B.Taille;
-    BigBinary result = initBigBinary(maxTaille + 1, 1);
-    int carry = 0;
-    
-    for (int i = 0; i < maxTaille; i++) {
-        int bitA = (i < A.Taille) ? A.Tdigits[A.Taille - 1 - i] : 0;
-        int bitB = (i < B.Taille) ? B.Tdigits[B.Taille - 1 - i] : 0;
-        
-        int sum = bitA + bitB + carry;
-        result.Tdigits[maxTaille - i] = sum % 2;
-        carry = sum / 2;
-    }
-    result.Tdigits[0] = carry;
-    
-    // Supprimer les zéros non significatifs
-    int firstOne = 0;
-    while (firstOne < result.Taille && result.Tdigits[firstOne] == 0) {
-        firstOne++;
-    }
-    
-    if (firstOne == result.Taille) {
-        libereBigBinary(&result);
+BigBinary copieBigBinary(BigBinary A) {
+    if (A.Signe == 0 || A.Taille == 0) {
         return initBigBinary(0, 0);
     }
     
-    BigBinary finalResult = initBigBinary(result.Taille - firstOne, 1);
-    for (int i = 0; i < finalResult.Taille; i++) {
-        finalResult.Tdigits[i] = result.Tdigits[firstOne + i];
-    }
-    
-    libereBigBinary(&result);
-    return finalResult;
-}
-
-/*
- * Soustraction : A - B
- * Restriction : A, B positifs et A >= B
- */
-BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
-    // Cas spéciaux
-    if (B.Signe == 0) {
-        BigBinary result = initBigBinary(A.Taille, A.Signe);
-        for (int i = 0; i < A.Taille; i++) {
-            result.Tdigits[i] = A.Tdigits[i];
-        }
-        return result;
-    }
-    
-    if (A.Signe == 0) {
-        return initBigBinary(0, 0);
-    }
-    
-    // Soustraction de droite à gauche
-    BigBinary result = initBigBinary(A.Taille, 1);
-    int borrow = 0;
-    
+    BigBinary copie = initBigBinary(A.Taille, A.Signe);
     for (int i = 0; i < A.Taille; i++) {
-        int bitA = A.Tdigits[A.Taille - 1 - i];
-        int bitB = (i < B.Taille) ? B.Tdigits[B.Taille - 1 - i] : 0;
-        
-        int diff = bitA - bitB - borrow;
-        
-        if (diff < 0) {
-            diff += 2;
-            borrow = 1;
-        } else {
-            borrow = 0;
-        }
-        
-        result.Tdigits[A.Taille - 1 - i] = diff;
+        copie.Tdigits[i] = A.Tdigits[i];
     }
-    
-    // Supprimer les zéros non significatifs
-    int firstOne = 0;
-    while (firstOne < result.Taille && result.Tdigits[firstOne] == 0) {
-        firstOne++;
-    }
-    
-    if (firstOne == result.Taille) {
-        libereBigBinary(&result);
-        return initBigBinary(0, 0);
-    }
-    
-    BigBinary finalResult = initBigBinary(result.Taille - firstOne, 1);
-    for (int i = 0; i < finalResult.Taille; i++) {
-        finalResult.Tdigits[i] = result.Tdigits[firstOne + i];
-    }
-    
-    libereBigBinary(&result);
-    return finalResult;
+    return copie;
 }
 
-// COMPARAISONS
+/* ============================================================================
+ * COMPARAISONS (Phase 1)
+ * ============================================================================ */
 
-// Vérifie si A == B
-
-bool egalBigBinary(BigBinary A, BigBinary B) {
+bool Egal(BigBinary A, BigBinary B) {
     if (A.Signe != B.Signe) return false;
     if (A.Signe == 0 && B.Signe == 0) return true;
     if (A.Taille != B.Taille) return false;
@@ -210,13 +147,10 @@ bool egalBigBinary(BigBinary A, BigBinary B) {
     for (int i = 0; i < A.Taille; i++) {
         if (A.Tdigits[i] != B.Tdigits[i]) return false;
     }
-    
     return true;
 }
 
-// Vérifie si A < B
-
-bool inferieurBigBinary(BigBinary A, BigBinary B) {
+bool Inferieur(BigBinary A, BigBinary B) {
     if (A.Signe < B.Signe) return true;
     if (A.Signe > B.Signe) return false;
     if (A.Signe == 0 && B.Signe == 0) return false;
@@ -240,7 +174,189 @@ bool inferieurBigBinary(BigBinary A, BigBinary B) {
         }
     }
     
-    if (A.Signe == -1) resultat = !resultat;
+    if (A.Signe == -1) {
+        resultat = !resultat;
+    }
+    
+    return resultat;
+}
+
+/* ============================================================================
+ * FONCTIONS UTILITAIRES
+ * ============================================================================ */
+
+bool estPair(BigBinary A) {
+    if (A.Signe == 0 || A.Taille == 0) return true;
+    return A.Tdigits[A.Taille - 1] == 0;
+}
+
+BigBinary decalageDroite(BigBinary A) {
+    if (A.Signe == 0 || A.Taille <= 1) {
+        return initBigBinary(0, 0);
+    }
+    
+    BigBinary resultat = initBigBinary(A.Taille - 1, 1);
+    for (int i = 0; i < resultat.Taille; i++) {
+        resultat.Tdigits[i] = A.Tdigits[i];
+    }
+    
+    return normaliserBigBinary(resultat);
+}
+
+BigBinary decalageGauche(BigBinary A) {
+    if (A.Signe == 0 || A.Taille == 0) {
+        return initBigBinary(0, 0);
+    }
+    
+    BigBinary resultat = initBigBinary(A.Taille + 1, A.Signe);
+    for (int i = 0; i < A.Taille; i++) {
+        resultat.Tdigits[i] = A.Tdigits[i];
+    }
+    resultat.Tdigits[A.Taille] = 0;
+    
+    return resultat;
+}
+
+/* ============================================================================
+ * OPÉRATIONS ARITHMÉTIQUES (Phase 1)
+ * ============================================================================ */
+
+BigBinary additionBigBinary(BigBinary A, BigBinary B) {
+    if (A.Signe == 0) return copieBigBinary(B);
+    if (B.Signe == 0) return copieBigBinary(A);
+    
+    int maxTaille = (A.Taille > B.Taille) ? A.Taille : B.Taille;
+    BigBinary resultat = initBigBinary(maxTaille + 1, 1);
+    
+    int retenue = 0;
+    for (int i = 0; i < maxTaille; i++) {
+        int bitA = (i < A.Taille) ? A.Tdigits[A.Taille - 1 - i] : 0;
+        int bitB = (i < B.Taille) ? B.Tdigits[B.Taille - 1 - i] : 0;
+        
+        int somme = bitA + bitB + retenue;
+        resultat.Tdigits[maxTaille - i] = somme % 2;
+        retenue = somme / 2;
+    }
+    resultat.Tdigits[0] = retenue;
+    
+    return normaliserBigBinary(resultat);
+}
+
+BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
+    if (B.Signe == 0) return copieBigBinary(A);
+    if (A.Signe == 0) return initBigBinary(0, 0);
+    
+    BigBinary resultat = initBigBinary(A.Taille, 1);
+    int emprunt = 0;
+    
+    for (int i = 0; i < A.Taille; i++) {
+        int bitA = A.Tdigits[A.Taille - 1 - i];
+        int bitB = (i < B.Taille) ? B.Tdigits[B.Taille - 1 - i] : 0;
+        
+        int diff = bitA - bitB - emprunt;
+        
+        if (diff < 0) {
+            diff += 2;
+            emprunt = 1;
+        } else {
+            emprunt = 0;
+        }
+        
+        resultat.Tdigits[A.Taille - 1 - i] = diff;
+    }
+    
+    return normaliserBigBinary(resultat);
+}
+
+/* ============================================================================
+ * FONCTIONS AVANCÉES (Phase 2)
+ * ============================================================================ */
+
+BigBinary BigBinary_mod(BigBinary A, BigBinary B) {
+    if (B.Signe == 0) {
+        printf("Erreur: Modulo par zero!\n");
+        return initBigBinary(0, 0);
+    }
+    
+    if (A.Signe == 0) return initBigBinary(0, 0);
+    if (Inferieur(A, B)) return copieBigBinary(A);
+    if (Egal(A, B)) return initBigBinary(0, 0);
+    
+    BigBinary reste = copieBigBinary(A);
+    
+    for (int i = 0; i < A.Taille; i++) {
+        int decalage = A.Taille - B.Taille - i;
+        if (decalage < 0) continue;
+        
+        BigBinary diviseurDecale = initBigBinary(B.Taille + decalage, 1);
+        for (int j = 0; j < B.Taille; j++) {
+            diviseurDecale.Tdigits[j] = B.Tdigits[j];
+        }
+        
+        while (!Inferieur(reste, diviseurDecale)) {
+            BigBinary nouveauReste = soustractionBigBinary(reste, diviseurDecale);
+            libereBigBinary(&reste);
+            reste = nouveauReste;
+        }
+        
+        libereBigBinary(&diviseurDecale);
+    }
+    
+    return reste;
+}
+
+BigBinary BigBinary_PGCD(BigBinary A, BigBinary B) {
+    if (A.Signe == 0) return copieBigBinary(B);
+    if (B.Signe == 0) return copieBigBinary(A);
+    if (Egal(A, B)) return copieBigBinary(A);
+    
+    BigBinary u = copieBigBinary(A);
+    BigBinary v = copieBigBinary(B);
+    
+    int k = 0;
+    while (estPair(u) && estPair(v)) {
+        BigBinary tempU = decalageDroite(u);
+        BigBinary tempV = decalageDroite(v);
+        libereBigBinary(&u);
+        libereBigBinary(&v);
+        u = tempU;
+        v = tempV;
+        k++;
+    }
+    
+    while (estPair(u)) {
+        BigBinary temp = decalageDroite(u);
+        libereBigBinary(&u);
+        u = temp;
+    }
+    
+    while (v.Signe != 0) {
+        while (estPair(v)) {
+            BigBinary temp = decalageDroite(v);
+            libereBigBinary(&v);
+            v = temp;
+        }
+        
+        if (Inferieur(v, u)) {
+            BigBinary temp = u;
+            u = v;
+            v = temp;
+        }
+        
+        BigBinary diff = soustractionBigBinary(v, u);
+        libereBigBinary(&v);
+        v = diff;
+    }
+    
+    BigBinary resultat = copieBigBinary(u);
+    libereBigBinary(&u);
+    libereBigBinary(&v);
+    
+    for (int i = 0; i < k; i++) {
+        BigBinary temp = decalageGauche(resultat);
+        libereBigBinary(&resultat);
+        resultat = temp;
+    }
     
     return resultat;
 }
