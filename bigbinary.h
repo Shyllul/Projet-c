@@ -1,11 +1,3 @@
-/**
- * @file bigbinary.h
- * @brief Bibliothèque pour la manipulation de grands nombres binaires
- * 
- * Structure BigBinary : représente un entier binaire de taille arbitraire
- * avec gestion du signe.
- */
-
 #ifndef BIGBINARY_H
 #define BIGBINARY_H
 

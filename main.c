@@ -1,8 +1,3 @@
-/**
- * @file main.c
- * @brief Programme de test pour la bibliothèque BigBinary
- */
-
 #include "bigbinary.h"
 #include <stdio.h>
 

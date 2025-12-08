@@ -1,8 +1,3 @@
-/**
- * @file bigbinary.c
- * @brief Implémentation des fonctions pour les grands nombres binaires
- */
-
 #include "bigbinary.h"
 #include <stdio.h>
 #include <stdlib.h>
