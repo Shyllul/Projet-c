@@ -114,9 +114,8 @@ Le programme `main.c` exécute 6 suites de tests :
 - [x] BigBinary_mod(A, B) : Calcul du modulo
 - [ ] BigBinary_expMod(M, exp, mod) : Exponentiation modulaire rapide
 
-### Phase 3 (Bonus)
-- [ ] BigBinary_RSA_encrypt(message, e, n) : Chiffrement RSA
-- [ ] BigBinary_RSA_decrypt(cipher, d, n) : Déchiffrement RSA
+### A faire
+- [ ] Définir 2 valeur de base pour les testes et faire en sorte que les calculs soit dynamiques avec les valeurs rentrée
 
 ## Remarques Importantes
 

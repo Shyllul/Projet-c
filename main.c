@@ -80,7 +80,7 @@ int main() {
     printf("\nTEST 5 : BigBinary_mod\n\n");
     
     BigBinary mod1 = creerBigBinaryDepuisChaine("1011");   // 11
-    BigBinary mod2 = creerBigBinaryDepuisChaine("11");     // 3
+    BigBinary mod2 = creerBigBinaryDepuisChaine("1");     // 3
     printf("  11 mod 3 = ");
     BigBinary reste1 = BigBinary_mod(mod1, mod2);
     afficheBigBinary(reste1);
@@ -103,8 +103,8 @@ int main() {
      * ------------------------------------------------------------------------ */
     printf("\nTEST 6 : BigBinary_PGCD\n\n");
     
-    BigBinary pgcd1 = creerBigBinaryDepuisChaine("110000");  // 48
-    BigBinary pgcd2 = creerBigBinaryDepuisChaine("10010");   // 18
+    BigBinary pgcd1 = creerBigBinaryDepuisChaine("10011");  // 48
+    BigBinary pgcd2 = creerBigBinaryDepuisChaine("01101");   // 18
     printf("  PGCD(48, 18) = ");
     BigBinary gcd1 = BigBinary_PGCD(pgcd1, pgcd2);
     afficheBigBinary(gcd1);
