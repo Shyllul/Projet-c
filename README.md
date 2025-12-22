@@ -115,7 +115,7 @@ Le programme `main.c` exécute 6 suites de tests :
 - [ ] BigBinary_expMod(M, exp, mod) : Exponentiation modulaire rapide
 
 ### A faire
-- [ ] Définir 2 valeur de base pour les testes et faire en sorte que les calculs soit dynamiques avec les valeurs rentrée
+- [x] Définir 2 valeur de base pour les testes et faire en sorte que les calculs soit dynamiques avec les valeurs rentrée
 
 ## Remarques Importantes
 
@@ -126,8 +126,3 @@ Le programme `main.c` exécute 6 suites de tests :
 - **Restrictions** : 
   - L'addition fonctionne uniquement avec A et B positifs ou nuls
   - La soustraction nécessite A ≥ B
-- Tous les tests passent avec succès
-
-## Auteur
-
-Projet réalisé dans le cadre d'un cours de programmation en C - ESIEA 3A S5.

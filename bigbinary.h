@@ -5,9 +5,8 @@
 
 #define BASE 2
 
-/* ============================================================================
- * STRUCTURE
- * ============================================================================ */
+
+// STRUCTURE
 
 typedef struct {
     int *Tdigits;   // Tableau de bits (MSB à gauche, LSB à droite)
@@ -15,9 +14,9 @@ typedef struct {
     int Signe;      // +1 (positif), -1 (négatif), 0 (nul)
 } BigBinary;
 
-/* ============================================================================
- * FONCTIONS DE BASE
- * ============================================================================ */
+
+
+// FONCTIONS DE BASE
 
 // Initialise un BigBinary vide (tout à zéro)
 BigBinary initBigBinary(int taille, int signe);
@@ -34,12 +33,21 @@ void afficheBigBinary(BigBinary nb);
 // Crée un BigBinary à partir d'une chaîne binaire (ex: "1010")
 BigBinary creerBigBinaryDepuisChaine(const char *chaine);
 
+// Crée un BigBinary à partir d'un entier décimal
+BigBinary creerBigBinaryDepuisEntier(int valeur);
+
+// Affiche le BigBinary en format octet espacé (ex: 0000 1100)
+void afficheBigBinaryOctet(BigBinary nb);
+
+// Convertit un BigBinary en entier décimal
+int bigBinaryVersEntier(BigBinary nb);
+
 // Crée une copie d'un BigBinary
 BigBinary copieBigBinary(BigBinary A);
 
-/* ============================================================================
- * OPÉRATIONS ARITHMÉTIQUES (Phase 1)
- * ============================================================================ */
+
+
+// OPÉRATIONS ARITHMÉTIQUES (Phase 1)
 
 // Addition : A + B (A, B positifs ou nuls)
 BigBinary additionBigBinary(BigBinary A, BigBinary B);
@@ -47,9 +55,7 @@ BigBinary additionBigBinary(BigBinary A, BigBinary B);
 // Soustraction : A - B (A >= B, positifs)
 BigBinary soustractionBigBinary(BigBinary A, BigBinary B);
 
-/* ============================================================================
- * COMPARAISONS (Phase 1)
- * ============================================================================ */
+// COMPARAISONS (Phase 1)
 
 // Egal(A, B) : renvoit true si A == B, sinon false
 bool Egal(BigBinary A, BigBinary B);
@@ -57,9 +63,7 @@ bool Egal(BigBinary A, BigBinary B);
 // Inferieur(A, B) : renvoit true si A < B, sinon false
 bool Inferieur(BigBinary A, BigBinary B);
 
-/* ============================================================================
- * FONCTIONS AVANCÉES (Phase 2)
- * ============================================================================ */
+// FONCTIONS AVANCÉES (Phase 2)
 
 // PGCD avec l'algorithme binaire d'Euclide
 BigBinary BigBinary_PGCD(BigBinary A, BigBinary B);
@@ -67,9 +71,9 @@ BigBinary BigBinary_PGCD(BigBinary A, BigBinary B);
 // Modulo : A mod B
 BigBinary BigBinary_mod(BigBinary A, BigBinary B);
 
-/* ============================================================================
- * FONCTIONS UTILITAIRES
- * ============================================================================ */
+
+
+// FONCTIONS UTILITAIRES
 
 // Vérifie si un BigBinary est pair
 bool estPair(BigBinary A);

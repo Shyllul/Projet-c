@@ -3,9 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ============================================================================
- * FONCTIONS INTERNES (PRIVÉES)
- * ============================================================================ */
+// FONCTIONS INTERNES (PRIVÉES)
 
 /**
  * Supprime les zéros non significatifs d'un BigBinary
@@ -35,9 +33,7 @@ static BigBinary normaliserBigBinary(BigBinary nb) {
     return resultat;
 }
 
-/* ============================================================================
- * FONCTIONS DE BASE
- * ============================================================================ */
+// FONCTIONS DE BASE
 
 BigBinary initBigBinary(int taille, int signe) {
     BigBinary nb;
@@ -130,9 +126,83 @@ BigBinary copieBigBinary(BigBinary A) {
     return copie;
 }
 
-/* ============================================================================
- * COMPARAISONS (Phase 1)
- * ============================================================================ */
+BigBinary creerBigBinaryDepuisEntier(int valeur) {
+    if (valeur == 0) {
+        return initBigBinary(0, 0);
+    }
+    
+    int signe = (valeur < 0) ? -1 : 1;
+    int val = (valeur < 0) ? -valeur : valeur;
+    
+    // Compter le nombre de bits nécessaires
+    int nbBits = 0;
+    int temp = val;
+    while (temp > 0) {
+        nbBits++;
+        temp /= 2;
+    }
+    
+    BigBinary nb = initBigBinary(nbBits, signe);
+    
+    // Remplir les bits (MSB à gauche)
+    for (int i = nbBits - 1; i >= 0; i--) {
+        nb.Tdigits[i] = val % 2;
+        val /= 2;
+    }
+    
+    return nb;
+}
+
+void afficheBigBinaryOctet(BigBinary nb) {
+    if (nb.Signe == -1) {
+        printf("-");
+    }
+    
+    if (nb.Signe == 0 || nb.Taille == 0) {
+        printf("0000 0000");
+        return;
+    }
+    
+    // Calculer le nombre de bits nécessaires pour un multiple de 8
+    int nbOctets = (nb.Taille + 7) / 8;
+    int totalBits = nbOctets * 8;
+    int padding = totalBits - nb.Taille;
+    
+    int bitCount = 0;
+    
+    // Afficher les zéros de padding
+    for (int i = 0; i < padding; i++) {
+        printf("0");
+        bitCount++;
+        if (bitCount % 4 == 0 && bitCount < totalBits) {
+            printf(" ");
+        }
+    }
+    
+    // Afficher les bits du nombre
+    for (int i = 0; i < nb.Taille; i++) {
+        printf("%d", nb.Tdigits[i]);
+        bitCount++;
+        if (bitCount % 4 == 0 && bitCount < totalBits) {
+            printf(" ");
+        }
+    }
+}
+
+int bigBinaryVersEntier(BigBinary nb) {
+    if (nb.Signe == 0 || nb.Taille == 0) {
+        return 0;
+    }
+    
+    int valeur = 0;
+    for (int i = 0; i < nb.Taille; i++) {
+        valeur = valeur * 2 + nb.Tdigits[i];
+    }
+    
+    return valeur * nb.Signe;
+}
+
+// COMPARAISONS (Phase 1)
 
 bool Egal(BigBinary A, BigBinary B) {
     if (A.Signe != B.Signe) return false;
@@ -176,9 +246,7 @@ bool Inferieur(BigBinary A, BigBinary B) {
     return resultat;
 }
 
-/* ============================================================================
- * FONCTIONS UTILITAIRES
- * ============================================================================ */
+// FONCTIONS UTILITAIRES
 
 bool estPair(BigBinary A) {
     if (A.Signe == 0 || A.Taille == 0) return true;
@@ -212,9 +280,7 @@ BigBinary decalageGauche(BigBinary A) {
     return resultat;
 }
 
-/* ============================================================================
- * OPÉRATIONS ARITHMÉTIQUES (Phase 1)
- * ============================================================================ */
+// OPÉRATIONS ARITHMÉTIQUES (Phase 1)
 
 BigBinary additionBigBinary(BigBinary A, BigBinary B) {
     if (A.Signe == 0) return copieBigBinary(B);
@@ -239,8 +305,20 @@ BigBinary additionBigBinary(BigBinary A, BigBinary B) {
 
 BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
     if (B.Signe == 0) return copieBigBinary(A);
-    if (A.Signe == 0) return initBigBinary(0, 0);
+    if (A.Signe == 0) {
+        BigBinary resultat = copieBigBinary(B);
+        resultat.Signe = -1;
+        return resultat;
+    }
     
+    // Si A < B, on calcule B - A et on met le signe négatif
+    if (Inferieur(A, B)) {
+        BigBinary resultat = soustractionBigBinary(B, A);
+        resultat.Signe = -1;
+        return resultat;
+    }
+    
+    // Cas normal : A >= B
     BigBinary resultat = initBigBinary(A.Taille, 1);
     int emprunt = 0;
     
@@ -263,9 +341,7 @@ BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
     return normaliserBigBinary(resultat);
 }
 
-/* ============================================================================
- * FONCTIONS AVANCÉES (Phase 2)
- * ============================================================================ */
+// FONCTIONS AVANCÉES (Phase 2)
 
 BigBinary BigBinary_mod(BigBinary A, BigBinary B) {
     if (B.Signe == 0) {
