@@ -83,37 +83,6 @@ void afficheBigBinary(BigBinary nb) {
     printf("\n");
 }
 
-BigBinary creerBigBinaryDepuisChaine(const char *chaine) {
-    int n = strlen(chaine);
-    
-    int nbBits = 0;
-    for (int i = 0; i < n; i++) {
-        if (chaine[i] == '0' || chaine[i] == '1') {
-            nbBits++;
-        }
-    }
-    
-    BigBinary nb = initBigBinary(nbBits, 1);
-    int index = 0;
-    bool tousZeros = true;
-    
-    for (int i = 0; i < n; i++) {
-        if (chaine[i] == '0' || chaine[i] == '1') {
-            nb.Tdigits[index] = chaine[i] - '0';
-            if (nb.Tdigits[index] == 1) {
-                tousZeros = false;
-            }
-            index++;
-        }
-    }
-    
-    if (tousZeros) {
-        nb.Signe = 0;
-    }
-    
-    return nb;
-}
-
 BigBinary copieBigBinary(BigBinary A) {
     if (A.Signe == 0 || A.Taille == 0) {
         return initBigBinary(0, 0);
