@@ -10,7 +10,7 @@ Bienvenue sur mon Projet en C appelé **BigBinary**, une bibliothèque C dévelo
 PROJET_C/
 ├── bigbinary.h     - Déclarations (structures et prototypes)
 ├── bigbinary.c     - Implémentation des fonctions
-├── main.c          - Programme principal avec tests
+├── main.c          - Calculatrice interactive
 ├── project.exe     - Exécutable Windows
 ├── docs/           - Documents du projet
 │   ├── Phase_1.pdf
@@ -61,15 +61,20 @@ Signe = +1
 |----------|-------------|
 | `initBigBinary(taille, signe)` | Initialise un BigBinary vide |
 | `libereBigBinary(nb)` | Libère la mémoire |
+| `libereMultipleBigBinary(tableau, taille)` | Libère plusieurs BigBinary |
 | `afficheBigBinary(nb)` | Affiche le nombre binaire |
+| `afficheBigBinaryOctet(nb)` | Affiche en format octet (0000 1100) |
 | `creerBigBinaryDepuisChaine(chaine)` | Crée depuis "101010..." |
+| `creerBigBinaryDepuisEntier(valeur)` | Crée depuis un entier décimal |
+| `bigBinaryVersEntier(nb)` | Convertit en entier décimal |
+| `copieBigBinary(A)` | Crée une copie d'un BigBinary |
 
 ### Opérations Arithmétiques (Phase 1)
 
 | Fonction | Description | Exemple |
 |----------|-------------|---------|
 | `additionBigBinary(A, B)` | A + B | 10 + 3 = 13 |
-| `soustractionBigBinary(A, B)` | A - B (A ≥ B) | 10 - 3 = 7 |
+| `soustractionBigBinary(A, B)` | A - B (supporte résultat négatif) | 13 - 15 = -2 |
 
 ### Comparaisons (Phase 1)
 
@@ -85,18 +90,57 @@ Signe = +1
 | `BigBinary_PGCD(A, B)` | PGCD avec algorithme binaire d'Euclide | PGCD(48, 18) = 6 |
 | `BigBinary_mod(A, B)` | A mod B (reste) | 11 mod 3 = 2 |
 
-## Tests Inclus
+### Fonctions Utilitaires
 
-Le programme `main.c` exécute 6 suites de tests :
+| Fonction | Description |
+|----------|-------------|
+| `estPair(A)` | Vérifie si un BigBinary est pair |
+| `decalageDroite(A)` | Division par 2 (décalage binaire) |
+| `decalageGauche(A)` | Multiplication par 2 (décalage binaire) |
 
-| Test | Description | Exemples |
-|------|-------------|----------|
-| 1 | Création/Affichage | 83, 0, -7 |
-| 2 | Addition | 83+11=94, 15+1=16 |
-| 3 | Soustraction | 83-11=72, 8-3=5 |
-| 4 | Egal / Inferieur | Egal(5,5)=true, Inferieur(5,11)=true |
-| 5 | BigBinary_mod | 11 mod 3=2, 20 mod 6=2 |
-| 6 | BigBinary_PGCD | PGCD(48,18)=6, PGCD(21,14)=7 |
+## Calculatrice Interactive
+
+Le programme `main.c` est une **calculatrice interactive** qui :
+
+1. Demande 2 nombres décimaux à l'utilisateur
+2. Affiche les valeurs en binaire (format octet) avec leur équivalent décimal
+3. Effectue toutes les opérations : Addition, Soustraction, Comparaisons, Modulo, PGCD
+
+### Exemple d'exécution
+
+```
+CALCULATRICE BIGBINARY
+
+Entrez le premier nombre (decimal) : 12
+Entrez le deuxieme nombre (decimal) : 5
+
+VALEURS SAISIES
+
+  Nombre 1 : 0000 1100 (12)
+  Nombre 2 : 0000 0101 (5)
+
+ADDITION
+
+  12 + 5 = 0001 0001 (17)
+
+SOUSTRACTION
+
+  12 - 5 = 0000 0111 (7)
+
+COMPARAISONS
+
+  12 == 5 ? Non
+  12 < 5  ? Non
+  12 > 5  ? Oui
+
+MODULO
+
+  12 mod 5 = 0000 0010 (2)
+
+PGCD
+
+  PGCD(12, 5) = 0000 0001 (1)
+```
 
 ## Phases du Projet
 
@@ -106,7 +150,7 @@ Le programme `main.c` exécute 6 suites de tests :
 - [x] Fonction d'affichage (afficheBigBinary)
 - [x] Fonction libereBigBinary pour éviter les fuites mémoire
 - [x] Fonction d'addition (algorithme "naïf")
-- [x] Fonction de soustraction (avec A ≥ B uniquement, algorithme "naïf")
+- [x] Fonction de soustraction (supporte A < B avec résultat négatif)
 - [x] Fonctions de comparaison : Egal(A, B) et Inferieur(A, B)
 
 ### Phase 2 
@@ -114,8 +158,11 @@ Le programme `main.c` exécute 6 suites de tests :
 - [x] BigBinary_mod(A, B) : Calcul du modulo
 - [ ] BigBinary_expMod(M, exp, mod) : Exponentiation modulaire rapide
 
-### A faire
-- [x] Définir 2 valeur de base pour les testes et faire en sorte que les calculs soit dynamiques avec les valeurs rentrée
+### Améliorations récentes
+- [x] Saisie de nombres décimaux (conversion automatique en binaire)
+- [x] Affichage en format octet (0000 1100)
+- [x] Affichage binaire + décimal pour tous les résultats
+- [x] Soustraction avec résultat négatif
 
 ## Remarques Importantes
 
@@ -123,6 +170,4 @@ Le programme `main.c` exécute 6 suites de tests :
 - **PGCD** : Algorithme binaire d'Euclide (optimisé pour le binaire, sans division)
 - **Modulo** : Basé sur la soustraction successive avec décalage
 - **Mémoire** : Gestion correcte, pas de fuites
-- **Restrictions** : 
-  - L'addition fonctionne uniquement avec A et B positifs ou nuls
-  - La soustraction nécessite A ≥ B
+- **Affichage** : Format octet espacé (4 bits séparés par un espace)
