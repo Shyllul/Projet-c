@@ -180,29 +180,6 @@ BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
         else { emprunt = 0; }
         resultat.Tdigits[A.Taille - 1 - i] = diff;
     }
-    
-    // Supprime les zéros en tête
-    int premier = 0;
-    while (premier < resultat.Taille && resultat.Tdigits[premier] == 0) premier++;
-    
-    if (premier == resultat.Taille) {
-        libereBigBinary(&resultat);
-        BigBinary zero;
-        zero.Tdigits = NULL;
-        zero.Taille = 0;
-        zero.Signe = 0;
-        return zero;
-    }
-    
-    if (premier > 0) {
-        BigBinary nouveau = createBigBinary(resultat.Taille - premier);
-        nouveau.Signe = 1;
-        for (int i = 0; i < nouveau.Taille; i++) {
-            nouveau.Tdigits[i] = resultat.Tdigits[premier + i];
-        }
-        libereBigBinary(&resultat);
-        return nouveau;
-    }
     return resultat;
 }
 
