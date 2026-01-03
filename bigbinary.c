@@ -66,33 +66,6 @@ void libereBigBinary (BigBinary * nb) {
 
 // Addition : A + B
 BigBinary additionBigBinary(BigBinary A, BigBinary B) {
-    // Cas où A est zéro
-    if (A.Signe == 0) {
-        if (B.Signe == 0) {
-            BigBinary zero;
-            zero.Tdigits = NULL;
-            zero.Taille = 0;
-            zero.Signe = 0;
-            return zero;
-        }
-        BigBinary copie = createBigBinary(B.Taille);
-        copie.Signe = B.Signe;
-        for (int i = 0; i < B.Taille; i++) {
-            copie.Tdigits[i] = B.Tdigits[i];
-        }
-        return copie;
-    }
-    
-    // Cas où B est zéro
-    if (B.Signe == 0) {
-        BigBinary copie = createBigBinary(A.Taille);
-        copie.Signe = A.Signe;
-        for (int i = 0; i < A.Taille; i++) {
-            copie.Tdigits[i] = A.Tdigits[i];
-        }
-        return copie;
-    }
-    
     int maxTaille = (A.Taille > B.Taille) ? A.Taille : B.Taille;
     BigBinary resultat = createBigBinary(maxTaille + 1);
     resultat.Signe = 1;
@@ -107,28 +80,6 @@ BigBinary additionBigBinary(BigBinary A, BigBinary B) {
     }
     resultat.Tdigits[0] = retenue;
     
-    // Supprime les zéros en tête
-    int premier = 0;
-    while (premier < resultat.Taille && resultat.Tdigits[premier] == 0) premier++;
-    
-    if (premier == resultat.Taille) {
-        libereBigBinary(&resultat);
-        BigBinary zero;
-        zero.Tdigits = NULL;
-        zero.Taille = 0;
-        zero.Signe = 0;
-        return zero;
-    }
-    
-    if (premier > 0) {
-        BigBinary nouveau = createBigBinary(resultat.Taille - premier);
-        nouveau.Signe = 1;
-        for (int i = 0; i < nouveau.Taille; i++) {
-            nouveau.Tdigits[i] = resultat.Tdigits[premier + i];
-        }
-        libereBigBinary(&resultat);
-        return nouveau;
-    }
     return resultat;
 }
 
@@ -183,31 +134,59 @@ BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
     return resultat;
 }
 
-// Retourne true si A == B
+// Retourne true si A == B (ignore les zéros en tête)
 bool Egal(BigBinary A, BigBinary B) {
     if (A.Signe != B.Signe) return false;
     if (A.Signe == 0 && B.Signe == 0) return true;
-    if (A.Taille != B.Taille) return false;
-    for (int i = 0; i < A.Taille; i++) {
-        if (A.Tdigits[i] != B.Tdigits[i]) return false;
+    
+    // Trouver le premier bit non-nul de A
+    int debutA = 0;
+    while (debutA < A.Taille && A.Tdigits[debutA] == 0) debutA++;
+    
+    // Trouver le premier bit non-nul de B
+    int debutB = 0;
+    while (debutB < B.Taille && B.Tdigits[debutB] == 0) debutB++;
+    
+    // Calculer les tailles effectives (sans zéros en tête)
+    int tailleA = A.Taille - debutA;
+    int tailleB = B.Taille - debutB;
+    
+    // Si les tailles effectives sont différentes, pas égaux
+    if (tailleA != tailleB) return false;
+    
+    // Comparer les bits significatifs
+    for (int i = 0; i < tailleA; i++) {
+        if (A.Tdigits[debutA + i] != B.Tdigits[debutB + i]) return false;
     }
     return true;
 }
 
-// Retourne true si A < B
+// Retourne true si A < B (ignore les zéros en tête)
 bool Inferieur(BigBinary A, BigBinary B) {
     if (A.Signe < B.Signe) return true;
     if (A.Signe > B.Signe) return false;
     if (A.Signe == 0 && B.Signe == 0) return false;
     
+    // Trouver le premier bit non-nul de A
+    int debutA = 0;
+    while (debutA < A.Taille && A.Tdigits[debutA] == 0) debutA++;
+    
+    // Trouver le premier bit non-nul de B
+    int debutB = 0;
+    while (debutB < B.Taille && B.Tdigits[debutB] == 0) debutB++;
+    
+    // Calculer les tailles effectives (sans zéros en tête)
+    int tailleA = A.Taille - debutA;
+    int tailleB = B.Taille - debutB;
+    
     bool resultat;
-    if (A.Taille < B.Taille) resultat = true;
-    else if (A.Taille > B.Taille) resultat = false;
+    if (tailleA < tailleB) resultat = true;
+    else if (tailleA > tailleB) resultat = false;
     else {
         resultat = false;
-        for (int i = 0; i < A.Taille; i++) {
-            if (A.Tdigits[i] < B.Tdigits[i]) { resultat = true; break; }
-            else if (A.Tdigits[i] > B.Tdigits[i]) { resultat = false; break; }
+        for (int i = 0; i < tailleA; i++) {
+            if (A.Tdigits[debutA + i] < B.Tdigits[debutB + i]) { resultat = true; break; }
+            else if (A.Tdigits[debutA + i] > B.Tdigits[debutB + i]) { resultat = false; break; }
         }
     }
     if (A.Signe == -1) resultat = !resultat;
@@ -274,7 +253,7 @@ BigBinary BigBinary_PGCD(BigBinary A, BigBinary B) {
     return a;
 }
 
-// Modulo avec décalages (optimisé)
+// Modulo avec décalages
 BigBinary BigBinary_mod(BigBinary A, BigBinary B) {
     // Division par zéro ou 0 mod B
     if (B.Signe == 0 || A.Signe == 0) {

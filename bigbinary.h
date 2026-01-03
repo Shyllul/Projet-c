@@ -1,9 +1,7 @@
-//Protection contre les inclusions multiples
-#ifndef BIGBINARY_H
 #define BIGBINARY_H
+#define BASE 2
 #include <stdio.h>
 #include <stdbool.h>
-#define BASE 2
 
 // Structure représentant un grand nombre binaire
 typedef struct {
@@ -31,5 +29,3 @@ BigBinary BigBinary_PGCD(BigBinary A, BigBinary B);
 BigBinary BigBinary_mod(BigBinary A, BigBinary B);
 BigBinary BigBinary_mult(BigBinary A, BigBinary B);
 BigBinary BigBinary_expMod(BigBinary M, unsigned int exp, BigBinary mod);
-
-#endif
