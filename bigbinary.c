@@ -49,13 +49,13 @@ BigBinary creerBigBinaryDepuisChaine(const char *chaine) {
 void afficheBigBinary(BigBinary nb) {
     if (nb.Signe == -1) printf(" -");
     if (nb.Signe == 0 || nb.Taille == 0) {
-        printf(" 0\n ") ;
+        printf("0\n") ;
         return ;
     }   
-    for ( int i = 0; i < nb . Taille ; ++ i ) {
-        printf ( " % d " , nb . Tdigits [ i ]) ;
+    for ( int i = 0; i < nb.Taille ; ++i ) {
+        printf ("%d",nb.Tdigits [ i ]) ;
     }
-    printf ( "\n" ) ;
+    printf ("\n") ;
 }
 
 // Libération de la mémoire
