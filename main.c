@@ -2,112 +2,181 @@
 #include <stdio.h>
 
 int main() {
-    printf("TESTS BIGBINARY - DONNEES EXTRAITES DU PDF\n\n");
-
-    // ========== PHASE 1 ==========
-    printf("PHASE 1\n\n");
+    unsigned long long a, b;
     
-    // Test de l'addition
-    printf("Test Addition : A1 + B1\n");
-    BigBinary A1 = creerBigBinaryDepuisChaine("10101010101001110011101000111110100001011101001000101100011010110000111000000110100011101001");
-    BigBinary B1 = creerBigBinaryDepuisChaine("11001011011111111000110000111010000000110101011000000100000010110101101001100011110001011000");
+    printf("=== TESTS BIGBINARY - SAISIE INTERACTIVE ===\n\n");
     
-    printf("A1 = ");
+    // ========== TEST ADDITION ==========
+    printf("--- TEST ADDITION ---\n");
+    printf("Entrez le premier nombre (A): ");
+    scanf("%llu", &a);
+    printf("Entrez le deuxieme nombre (B): ");
+    scanf("%llu", &b);
+    
+    BigBinary A1 = creerBigBinaryDepuisDecimal(a);
+    BigBinary B1 = creerBigBinaryDepuisDecimal(b);
+    
+    printf("A = %llu = ", a);
     afficheBigBinary(A1);
-    printf("B1 = ");
+    printf("B = %llu = ", b);
     afficheBigBinary(B1);
     
     BigBinary somme = additionBigBinary(A1, B1);
-    printf("A1 + B1 = ");
+    printf("A + B = ");
     afficheBigBinary(somme);
+    printf("       (%llu)\n", bigBinaryVersDecimal(somme));
     
     libereBigBinary(&A1);
     libereBigBinary(&B1);
     libereBigBinary(&somme);
     
-    // Test des comparaisons
-    printf("\nTest Comparaisons\n");
-    BigBinary A2 = creerBigBinaryDepuisChaine("11001110111000001101101111110100110000001010101010001000000110010010001110000100001110010011");
-    BigBinary B2 = creerBigBinaryDepuisChaine("1011010010110001110110001111010010111011110000010011100011010000001001000100001001101101001001");
-    BigBinary C2 = creerBigBinaryDepuisChaine("1110000100010000000010011001011001001010010011101101110000110000011001110110100010101001");
+    // ========== TEST SOUSTRACTION ==========
+    printf("\n--- TEST SOUSTRACTION ---\n");
+    printf("Entrez le premier nombre (A): ");
+    scanf("%llu", &a);
+    printf("Entrez le deuxieme nombre (B): ");
+    scanf("%llu", &b);
     
-    printf("A2 = ");
+    BigBinary A2 = creerBigBinaryDepuisDecimal(a);
+    BigBinary B2 = creerBigBinaryDepuisDecimal(b);
+    
+    printf("A = %llu = ", a);
     afficheBigBinary(A2);
-    printf("B2 = ");
+    printf("B = %llu = ", b);
     afficheBigBinary(B2);
-    printf("C2 = ");
-    afficheBigBinary(C2);
     
-    printf("\nEgal(A2, B2) = %s\n", Egal(A2, B2) ? "true" : "false");
-    printf("Inferieur(A2, B2) = %s\n", Inferieur(A2, B2) ? "true" : "false");
-    printf("Inferieur(C2, A2) = %s (A2 > C2)\n", Inferieur(C2, A2) ? "true" : "false");
+    BigBinary diff = soustractionBigBinary(A2, B2);
+    printf("A - B = ");
+    afficheBigBinary(diff);
+    printf("       (%llu)\n", bigBinaryVersDecimal(diff));
     
     libereBigBinary(&A2);
     libereBigBinary(&B2);
-    libereBigBinary(&C2);
+    libereBigBinary(&diff);
     
-    // ========== PHASE 2 ==========
-    printf("\nPHASE 2\n\n");
+    // ========== TEST COMPARAISONS ==========
+    printf("\n--- TEST COMPARAISONS ---\n");
+    printf("Entrez le premier nombre (A): ");
+    scanf("%llu", &a);
+    printf("Entrez le deuxieme nombre (B): ");
+    scanf("%llu", &b);
     
-    // Test du PGCD
-    printf("Test PGCD\n");
-    BigBinary PGCD_A = creerBigBinaryDepuisChaine("1111000111100010011110010000101011010011001011000010100111001100110010111001010111101101110");
-    BigBinary PGCD_B = creerBigBinaryDepuisChaine("1110011001111101100000011111111011000111000001100111110011111011011010101110110111000110111");
+    BigBinary A3 = creerBigBinaryDepuisDecimal(a);
+    BigBinary B3 = creerBigBinaryDepuisDecimal(b);
     
-    printf("PGCD_A = ");
-    afficheBigBinary(PGCD_A);
-    printf("PGCD_B = ");
-    afficheBigBinary(PGCD_B);
+    printf("A = %llu = ", a);
+    afficheBigBinary(A3);
+    printf("B = %llu = ", b);
+    afficheBigBinary(B3);
     
-    BigBinary pgcd = BigBinary_PGCD(PGCD_A, PGCD_B);
-    printf("PGCD(PGCD_A, PGCD_B) = ");
+    printf("Egal(A, B) = %s\n", Egal(A3, B3) ? "true" : "false");
+    printf("Inferieur(A, B) = %s\n", Inferieur(A3, B3) ? "true" : "false");
+    
+    libereBigBinary(&A3);
+    libereBigBinary(&B3);
+    
+    // ========== TEST PGCD ==========
+    printf("\n--- TEST PGCD ---\n");
+    printf("Entrez le premier nombre (A): ");
+    scanf("%llu", &a);
+    printf("Entrez le deuxieme nombre (B): ");
+    scanf("%llu", &b);
+    
+    BigBinary A4 = creerBigBinaryDepuisDecimal(a);
+    BigBinary B4 = creerBigBinaryDepuisDecimal(b);
+    
+    printf("A = %llu = ", a);
+    afficheBigBinary(A4);
+    printf("B = %llu = ", b);
+    afficheBigBinary(B4);
+    
+    BigBinary pgcd = BigBinary_PGCD(A4, B4);
+    printf("PGCD(A, B) = ");
     afficheBigBinary(pgcd);
+    printf("            (%llu)\n", bigBinaryVersDecimal(pgcd));
     
-    libereBigBinary(&PGCD_A);
-    libereBigBinary(&PGCD_B);
+    libereBigBinary(&A4);
+    libereBigBinary(&B4);
     libereBigBinary(&pgcd);
     
-    // Test du modulo
-    printf("\nTest Modulo\n");
-    BigBinary MOD_A = creerBigBinaryDepuisChaine("110011100001110100010101100001011010011110000100010011100011100110100000110000010011011010");
-    BigBinary MOD_B = creerBigBinaryDepuisChaine("11001001100000010001111000000101111110010111111011101010110010111111011101010001000010100010001111111010011010");
+    // ========== TEST MODULO ==========
+    printf("\n--- TEST MODULO ---\n");
+    printf("Entrez le premier nombre (A): ");
+    scanf("%llu", &a);
+    printf("Entrez le deuxieme nombre (B): ");
+    scanf("%llu", &b);
     
-    printf("MOD_A = ");
-    afficheBigBinary(MOD_A);
-    printf("MOD_B = ");
-    afficheBigBinary(MOD_B);
+    BigBinary A5 = creerBigBinaryDepuisDecimal(a);
+    BigBinary B5 = creerBigBinaryDepuisDecimal(b);
     
-    BigBinary mod = BigBinary_mod(MOD_A, MOD_B);
-    printf("MOD_A mod MOD_B = ");
+    printf("A = %llu = ", a);
+    afficheBigBinary(A5);
+    printf("B = %llu = ", b);
+    afficheBigBinary(B5);
+    
+    BigBinary mod = BigBinary_mod(A5, B5);
+    printf("A mod B = ");
     afficheBigBinary(mod);
+    printf("         (%llu)\n", bigBinaryVersDecimal(mod));
     
-    libereBigBinary(&MOD_A);
-    libereBigBinary(&MOD_B);
+    libereBigBinary(&A5);
+    libereBigBinary(&B5);
     libereBigBinary(&mod);
-
-
-    // Test de l'exponentiation modulaire
-    printf("\nTest Exponentiation Modulaire\n");
     
-    BigBinary EXP_M = creerBigBinaryDepuisChaine("10100011000010111111011001110010101101100100111110001101000001001111000000110000111010111010111001110001000000000111000100001011110101001111100110111100000110100100110110110010111000101101001011110100011011010110110111100000000110100100111111000111100110");
-    unsigned int EXP_EXP = 17;
-    BigBinary EXP_MOD = creerBigBinaryDepuisChaine("10000000000000000000000000000000000000000001111111010110100101011011011001011001010111010011000101010011000101010100010100111001000000000000000010010110000101101110001010011010011001001100001111111110111101100000001000100100011010000010001111011011010110001");
+    // ========== TEST MULTIPLICATION ==========
+    printf("\n--- TEST MULTIPLICATION ---\n");
+    printf("Entrez le premier nombre (A): ");
+    scanf("%llu", &a);
+    printf("Entrez le deuxieme nombre (B): ");
+    scanf("%llu", &b);
     
-    printf("EXP_M = ");
-    afficheBigBinary(EXP_M);
-    printf("EXP_EXP = %u\n", EXP_EXP);
-    printf("EXP_MOD = ");
-    afficheBigBinary(EXP_MOD);
+    BigBinary A6 = creerBigBinaryDepuisDecimal(a);
+    BigBinary B6 = creerBigBinaryDepuisDecimal(b);
     
-    BigBinary exp_result = BigBinary_expMod(EXP_M, EXP_EXP, EXP_MOD);
-    printf("EXP_M^EXP_EXP mod EXP_MOD = ");
-    afficheBigBinary(exp_result);
+    printf("A = %llu = ", a);
+    afficheBigBinary(A6);
+    printf("B = %llu = ", b);
+    afficheBigBinary(B6);
     
-    libereBigBinary(&EXP_M);
-    libereBigBinary(&EXP_MOD);
-    libereBigBinary(&exp_result);
+    BigBinary produit = BigBinary_mult(A6, B6);
+    printf("A * B = ");
+    afficheBigBinary(produit);
+    printf("       (%llu)\n", bigBinaryVersDecimal(produit));
     
-    printf("\nFIN DES TESTS\n");
+    libereBigBinary(&A6);
+    libereBigBinary(&B6);
+    libereBigBinary(&produit);
+    
+    // ========== TEST EXPONENTIATION MODULAIRE ==========
+    printf("\n--- TEST EXPONENTIATION MODULAIRE ---\n");
+    unsigned int exp;
+    unsigned long long m;
+    printf("Entrez M (base): ");
+    scanf("%llu", &m);
+    printf("Entrez l'exposant: ");
+    scanf("%u", &exp);
+    printf("Entrez le modulo: ");
+    scanf("%llu", &b);
+    
+    BigBinary M = creerBigBinaryDepuisDecimal(m);
+    BigBinary modExp = creerBigBinaryDepuisDecimal(b);
+    
+    printf("M = %llu = ", m);
+    afficheBigBinary(M);
+    printf("Exposant = %u\n", exp);
+    printf("Modulo = %llu = ", b);
+    afficheBigBinary(modExp);
+    
+    BigBinary expResult = BigBinary_expMod(M, exp, modExp);
+    printf("M^%u mod %llu = ", exp, b);
+    afficheBigBinary(expResult);
+    printf("              (%llu)\n", bigBinaryVersDecimal(expResult));
+    
+    libereBigBinary(&M);
+    libereBigBinary(&modExp);
+    libereBigBinary(&expResult);
+    
+    printf("\n=== FIN DES TESTS ===\n");
     
     return 0;
 }

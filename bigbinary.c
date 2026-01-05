@@ -45,7 +45,60 @@ BigBinary creerBigBinaryDepuisChaine(const char *chaine) {
     return nb;
 }
 
-// Affichage du nombre binaire
+// Création depuis un nombre décimal
+BigBinary creerBigBinaryDepuisDecimal(unsigned long long nombre) {
+    // Cas spécial : zéro
+    if (nombre == 0) {
+        BigBinary zero;
+        zero.Tdigits = NULL;
+        zero.Taille = 0;
+        zero.Signe = 0;
+        return zero;
+    }
+    
+    // Compter le nombre de bits nécessaires
+    int nbBits = 0;
+    unsigned long long temp = nombre;
+    while (temp > 0) {
+        nbBits++;
+        temp = temp / 2;
+    }
+    
+    // Créer le BigBinary
+    BigBinary nb = createBigBinary(nbBits);
+    nb.Signe = 1;
+    
+    // Remplir les bits de droite à gauche
+    temp = nombre;
+    for (int i = nbBits - 1; i >= 0; i--) {
+        nb.Tdigits[i] = temp % 2;
+        temp = temp / 2;
+    }
+    
+    return nb;
+}
+
+// Conversion d'un BigBinary vers un nombre decimal
+unsigned long long bigBinaryVersDecimal(BigBinary nb) {
+    if (nb.Signe == 0 || nb.Taille == 0) {
+        return 0;
+    }
+    
+    unsigned long long resultat = 0;
+    unsigned long long puissance = 1;
+    
+    // Parcourir les bits de droite a gauche
+    for (int i = nb.Taille - 1; i >= 0; i--) {
+        if (nb.Tdigits[i] == 1) {
+            resultat = resultat + puissance;
+        }
+        puissance = puissance * 2;
+    }
+    
+    return resultat;
+}
+
+// Affichage d'un BigBinary
 void afficheBigBinary(BigBinary nb) {
     if (nb.Signe == -1) printf(" -");
     if (nb.Signe == 0 || nb.Taille == 0) {
