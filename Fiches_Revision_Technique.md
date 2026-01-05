@@ -195,15 +195,63 @@ Retourner résultat
 ## Exponentiation Modulaire
 
 ### BigBinary_expMod(M, exp, mod)
-**But** : Calculer M^exp mod modulo.
+**But** : Calculer M^exp mod modulo efficacement (sans calculer M^exp directement).
+
+**Pourquoi cette méthode ?**
+Calculer d'abord M^exp puis faire le modulo serait trop lent pour de grands exposants (nombres gigantesques). La méthode "square and multiply" applique le modulo à chaque étape, gardant les nombres petits.
+
+---
+
+**Cas spéciaux gérés** :
+| Condition | Résultat | Explication |
+|-----------|----------|-------------|
+| mod = 0   | retourne 0 | Division par zéro impossible |
+| exp = 0   | retourne 1 | x^0 = 1 pour tout x |
+| M = 0     | retourne 0 | 0^n = 0 pour tout n > 0 |
+
+---
 
 **Méthode "square and multiply"** :
 ```
 résultat = 1
-base = M mod modulo
+base = M mod modulo           ← Réduire M dès le début
 Tant que exp > 0 :
-    Si exp impair : résultat = (résultat × base) mod modulo
-    exp = exp ÷ 2
-    base = (base × base) mod modulo
+    Si exp impair : 
+        résultat = (résultat × base) mod modulo
+    exp = exp ÷ 2             ← Division entière
+    base = (base × base) mod modulo  ← Élever au carré
 Retourner résultat
 ```
+
+**Principe** : Au lieu de faire exp multiplications, on n'en fait que log₂(exp) grâce au carré répété.
+
+---
+
+**Exemple détaillé** : 3^5 mod 7
+
+| Étape | exp | exp impair? | résultat | base | Action |
+|-------|-----|-------------|----------|------|--------|
+| Init  | 5   | -           | 1        | 3    | base = 3 mod 7 = 3 |
+| 1     | 5   | Oui         | (1×3) mod 7 = **3** | 3²=9 mod 7 = **2** | exp=5/2=2 |
+| 2     | 2   | Non         | 3        | 2²=4 mod 7 = **4** | exp=2/2=1 |
+| 3     | 1   | Oui         | (3×4) mod 7 = **5** | - | exp=1/2=0, stop |
+
+**Résultat** : 3^5 mod 7 = **5** ✓ (vérification : 243 mod 7 = 5)
+
+---
+
+**Gestion mémoire dans le code** :
+```c
+// À chaque multiplication, on crée un nouveau BigBinary
+BigBinary produit = BigBinary_mult(resultat, base);
+BigBinary temp = BigBinary_mod(produit, mod);
+libereBigBinary(&produit);   // ← Libérer l'ancien produit
+libereBigBinary(&resultat);  // ← Libérer l'ancien résultat
+resultat = temp;             // ← Nouvelle référence
+```
+**Important** : Sans ces `libereBigBinary`, on aurait des fuites mémoire à chaque itération de la boucle !
+
+---
+
+**Complexité** : O(log₂(exp)) multiplications et modulos au lieu de O(exp). 
+Exemple : Pour exp = 1000, seulement ~10 opérations au lieu de 1000 !
