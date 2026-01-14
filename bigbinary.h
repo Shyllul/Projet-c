@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-// Structure représentant un grand nombre binaire
+//Structure représentant un grand nombre binaire
 typedef struct {
-    int *Tdigits;  // Tableau des chiffres binaires (0 ou 1)
-    int Taille;    // Nombre de chiffres
-    int Signe;     // 1 = positif, -1 = négatif, 0 = zéro
+    int *Tdigits;  //Tableau des chiffres binaires (0 ou 1)
+    int Taille;    //Nombre de chiffres
+    int Signe;     //1 = positif, -1 = négatif, 0 = zéro
 } BigBinary;
 
 //Création et gestion mémoire
