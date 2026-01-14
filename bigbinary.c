@@ -47,14 +47,6 @@ BigBinary creerBigBinaryDepuisChaine(const char *chaine) {
 
 // Création depuis un nombre décimal
 BigBinary creerBigBinaryDepuisDecimal(unsigned long long nombre) {
-    // Cas spécial : zéro
-    if (nombre == 0) {
-        BigBinary zero;
-        zero.Tdigits = NULL;
-        zero.Taille = 0;
-        zero.Signe = 0;
-        return zero;
-    }
     
     // Compter le nombre de bits nécessaires
     int nbBits = 0;
