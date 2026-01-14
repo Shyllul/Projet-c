@@ -45,67 +45,31 @@ BigBinary creerBigBinaryDepuisChaine(const char *chaine) {
     return nb;
 }
 
-// Création depuis un nombre décimal
-BigBinary creerBigBinaryDepuisDecimal(unsigned long long nombre) {
-    
-    // Compter le nombre de bits nécessaires
-    int nbBits = 0;
-    unsigned long long temp = nombre;
-    while (temp > 0) {
-        nbBits++;
-        temp = temp / 2;
-    }
-    
-    // Créer le BigBinary
-    BigBinary nb = createBigBinary(nbBits);
-    nb.Signe = 1;
-    
-    // Remplir les bits de droite à gauche
-    temp = nombre;
-    for (int i = nbBits - 1; i >= 0; i--) {
-        nb.Tdigits[i] = temp % 2;
-        temp = temp / 2;
-    }
-    
-    return nb;
-}
-
-// Conversion d'un BigBinary vers un nombre decimal
-long long bigBinaryVersDecimal(BigBinary nb) {
-    if (nb.Signe == 0 || nb.Taille == 0) {
-        return 0;
-    }
-    
-    long long resultat = 0;
-    long long puissance = 1;
-    
-    // Parcourir les bits de droite a gauche
-    for (int i = nb.Taille - 1; i >= 0; i--) {
-        if (nb.Tdigits[i] == 1) {
-            resultat = resultat + puissance;
-        }
-        puissance = puissance * 2;
-    }
-    
-    // Appliquer le signe négatif si nécessaire
-    if (nb.Signe == -1) {
-        resultat = -resultat;
-    }
-    
-    return resultat;
-}
-
 // Affichage d'un BigBinary
 void afficheBigBinary(BigBinary nb) {
     if (nb.Signe == -1) printf(" -");
     if (nb.Signe == 0 || nb.Taille == 0) {
         printf("0\n") ;
         return ;
-    }   
-    for ( int i = 0; i < nb.Taille ; ++i ) {
-        printf ("%d",nb.Tdigits [ i ]) ;
     }
-    printf ("\n") ;
+    
+    // Trouver le premier bit non-nul (ignorer les zéros en tête)
+    int debut = 0;
+    while (debut < nb.Taille && nb.Tdigits[debut] == 0) {
+        debut = debut + 1;
+    }
+    
+    // Si tous les bits sont zéro, afficher "0"
+    if (debut == nb.Taille) {
+        printf("0\n");
+        return;
+    }
+    
+    // Afficher à partir du premier bit non-nul
+    for (int i = debut; i < nb.Taille; ++i) {
+        printf("%d", nb.Tdigits[i]);
+    }
+    printf("\n");
 }
 
 // Libération de la mémoire
@@ -184,18 +148,16 @@ BigBinary additionBigBinary(BigBinary A, BigBinary B) {
 
 // SOUSTRACTION : A - B
 BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
-    
+
     // Cas spécial 1 : Si B est zéro, le résultat est A
-    if (B.Signe == 0) {
-        if (A.Signe == 0) {
-            // 0 - 0 = 0
+    if (B.Signe == 0 || B.Taille == 0) {
+        if (A.Signe == 0 || A.Taille == 0) {
             BigBinary zero;
             zero.Tdigits = NULL;
             zero.Taille = 0;
             zero.Signe = 0;
             return zero;
         }
-        // A - 0 = A (on fait une copie)
         BigBinary copie = createBigBinary(A.Taille);
         copie.Signe = A.Signe;
         for (int i = 0; i < A.Taille; i++) {
@@ -205,15 +167,15 @@ BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
     }
     
     // Cas spécial 2 : Si A est zéro, le résultat est -B
-    if (A.Signe == 0) {
+    if (A.Signe == 0 || A.Taille == 0) {
         BigBinary copie = createBigBinary(B.Taille);
-        copie.Signe = -1;  // Négatif car 0 - B = -B
+        copie.Signe = -1;
         for (int i = 0; i < B.Taille; i++) {
             copie.Tdigits[i] = B.Tdigits[i];
         }
         return copie;
     }
-    
+
     // Cas spécial 3 : Si A < B, on calcule B - A et on met le signe négatif
     if (Inferieur(A, B)) {
         BigBinary resultat = soustractionBigBinary(B, A);
@@ -221,7 +183,16 @@ BigBinary soustractionBigBinary(BigBinary A, BigBinary B) {
         return resultat;
     }
     
-    // Cas normal : A >= B, on fait la soustraction classique
+    // Cas spécial 4 : Si A == B, le résultat est zéro
+    if (Egal(A, B)) {
+        BigBinary zero;
+        zero.Tdigits = NULL;
+        zero.Taille = 0;
+        zero.Signe = 0;
+        return zero;
+    }
+    
+    // Cas normal : A > B, on fait la soustraction classique
     BigBinary resultat = createBigBinary(A.Taille);
     resultat.Signe = 1;
     int emprunt = 0;
@@ -381,17 +352,16 @@ bool Inferieur(BigBinary A, BigBinary B) {
 BigBinary BigBinary_PGCD(BigBinary A, BigBinary B) {
     
     // Cas spécial : Si A == 0, retourner B
-    if (A.Signe == 0) {
-        if (B.Signe == 0) {
+    if (A.Signe == 0 || A.Taille == 0) {
+        if (B.Signe == 0 || B.Taille == 0) {
             BigBinary zero;
             zero.Tdigits = NULL;
             zero.Taille = 0;
             zero.Signe = 0;
             return zero;
         }
-        // Faire une copie de B
         BigBinary copie = createBigBinary(B.Taille);
-        copie.Signe = B.Signe;
+        copie.Signe = 1;
         for (int i = 0; i < B.Taille; i++) {
             copie.Tdigits[i] = B.Tdigits[i];
         }
@@ -399,9 +369,9 @@ BigBinary BigBinary_PGCD(BigBinary A, BigBinary B) {
     }
     
     // Cas spécial : Si B == 0, retourner A
-    if (B.Signe == 0) {
+    if (B.Signe == 0 || B.Taille == 0) {
         BigBinary copie = createBigBinary(A.Taille);
-        copie.Signe = A.Signe;
+        copie.Signe = 1;
         for (int i = 0; i < A.Taille; i++) {
             copie.Tdigits[i] = A.Tdigits[i];
         }
@@ -463,6 +433,13 @@ BigBinary BigBinary_mod(BigBinary A, BigBinary B) {
         return copie;
     }
     
+    // Trouver le premier bit non-nul de B (taille effective)
+    int debutB = 0;
+    while (debutB < B.Taille && B.Tdigits[debutB] == 0) {
+        debutB = debutB + 1;
+    }
+    int tailleB = B.Taille - debutB;
+    
     // Copie de travail de A (le reste)
     BigBinary reste = createBigBinary(A.Taille);
     reste.Signe = A.Signe;
@@ -471,36 +448,65 @@ BigBinary BigBinary_mod(BigBinary A, BigBinary B) {
     }
     
     // Division par soustractions avec décalages
-    // On décale B vers la gauche pour soustraire plus efficacement
-    for (int i = 0; i < A.Taille; i++) {
-        int decalage = A.Taille - B.Taille - i;
-        
-        if (decalage < 0) {
-            continue;  // Passer à l'itération suivante
+    // On continue tant que reste >= B
+    while (Inferieur(reste, B) == false && Egal(reste, B) == false) {
+        // Trouver la taille effective du reste actuel
+        int debutReste = 0;
+        while (debutReste < reste.Taille && reste.Tdigits[debutReste] == 0) {
+            debutReste = debutReste + 1;
         }
+        int tailleReste = reste.Taille - debutReste;
+        
+        // Calculer le décalage optimal
+        int decalage = tailleReste - tailleB;
+        if (decalage < 0) decalage = 0;
         
         // Créer B décalé (B * 2^decalage)
-        // Exemple : si B = 101 et decalage = 2, alors B décalé = 10100
-        BigBinary diviseurDecale = createBigBinary(B.Taille + decalage);
+        BigBinary diviseurDecale = createBigBinary(tailleB + decalage);
         diviseurDecale.Signe = 1;
         
-        // Copier les bits de B
-        for (int j = 0; j < B.Taille; j++) {
-            diviseurDecale.Tdigits[j] = B.Tdigits[j];
+        // Copier les bits de B (à partir du premier bit non-nul)
+        for (int j = 0; j < tailleB; j++) {
+            diviseurDecale.Tdigits[j] = B.Tdigits[debutB + j];
         }
         // Ajouter les zéros à droite
-        for (int j = B.Taille; j < B.Taille + decalage; j++) {
+        for (int j = tailleB; j < tailleB + decalage; j++) {
             diviseurDecale.Tdigits[j] = 0;
         }
         
-        // Soustraire tant que le reste est >= diviseur décalé
-        while (Inferieur(reste, diviseurDecale) == false) {
-            BigBinary nouveauReste = soustractionBigBinary(reste, diviseurDecale);
-            libereBigBinary(&reste);
-            reste = nouveauReste;
+        // Si diviseur décalé > reste, réduire le décalage de 1
+        if (Inferieur(reste, diviseurDecale)) {
+            libereBigBinary(&diviseurDecale);
+            if (decalage > 0) {
+                decalage = decalage - 1;
+                diviseurDecale = createBigBinary(tailleB + decalage);
+                diviseurDecale.Signe = 1;
+                for (int j = 0; j < tailleB; j++) {
+                    diviseurDecale.Tdigits[j] = B.Tdigits[debutB + j];
+                }
+                for (int j = tailleB; j < tailleB + decalage; j++) {
+                    diviseurDecale.Tdigits[j] = 0;
+                }
+            } else {
+                break;  // On ne peut plus soustraire
+            }
         }
         
+        // Soustraire une fois
+        BigBinary nouveauReste = soustractionBigBinary(reste, diviseurDecale);
+        libereBigBinary(&reste);
         libereBigBinary(&diviseurDecale);
+        reste = nouveauReste;
+    }
+    
+    // Cas où reste == B : le résultat est 0
+    if (Egal(reste, B)) {
+        libereBigBinary(&reste);
+        BigBinary zero;
+        zero.Tdigits = NULL;
+        zero.Taille = 0;
+        zero.Signe = 0;
+        return zero;
     }
     
     return reste;
@@ -612,7 +618,8 @@ BigBinary BigBinary_mult(BigBinary A, BigBinary B) {
 // EXPONENTIATION MODULAIRE : M^exp mod modulo
 // Calcule M puissance exp, modulo un nombre
 // Utilise la méthode "square and multiply" pour être efficace
-BigBinary BigBinary_expMod(BigBinary M, unsigned int exp, BigBinary mod) {
+// L'exposant est maintenant un BigBinary
+BigBinary BigBinary_expMod(BigBinary M, BigBinary exp, BigBinary mod) {
     
     // Cas spécial : modulo zéro
     if (mod.Signe == 0) {
@@ -624,7 +631,7 @@ BigBinary BigBinary_expMod(BigBinary M, unsigned int exp, BigBinary mod) {
     }
     
     // x^0 = 1
-    if (exp == 0) {
+    if (exp.Signe == 0) {
         BigBinary un = createBigBinary(1);
         un.Signe = 1;
         un.Tdigits[0] = 1;
@@ -640,6 +647,20 @@ BigBinary BigBinary_expMod(BigBinary M, unsigned int exp, BigBinary mod) {
         return zero;
     }
     
+    // Trouver le premier bit non-nul de l'exposant
+    int debutExp = 0;
+    while (debutExp < exp.Taille && exp.Tdigits[debutExp] == 0) {
+        debutExp = debutExp + 1;
+    }
+    
+    // Si l'exposant est zéro (tous les bits sont 0)
+    if (debutExp == exp.Taille) {
+        BigBinary un = createBigBinary(1);
+        un.Signe = 1;
+        un.Tdigits[0] = 1;
+        return un;
+    }
+    
     // Initialiser le résultat à 1
     BigBinary resultat = createBigBinary(1);
     resultat.Signe = 1;
@@ -648,33 +669,28 @@ BigBinary BigBinary_expMod(BigBinary M, unsigned int exp, BigBinary mod) {
     // Calculer M mod modulo pour commencer
     BigBinary base = BigBinary_mod(M, mod);
     
-    // Méthode "square and multiply" :
-    // - Si l'exposant est impair, multiplier le résultat par la base
-    // - Élever la base au carré
-    // - Diviser l'exposant par 2
-    // - Appliquer modulo à chaque étape
+    // Méthode "square and multiply" de gauche à droite :
+    // Pour chaque bit de l'exposant (de gauche à droite, après le premier 1) :
+    // 1. Élever le résultat au carré
+    // 2. Si le bit est 1, multiplier par la base
     
-    while (exp > 0) {
-        // Si exp est impair
-        if (exp % 2 == 1) {
-            // resultat = resultat * base mod modulo
+    for (int i = debutExp; i < exp.Taille; i++) {
+        if (i > debutExp) {
+            // Élever le résultat au carré (sauf pour le premier bit)
+            BigBinary carre = BigBinary_mult(resultat, resultat);
+            BigBinary temp = BigBinary_mod(carre, mod);
+            libereBigBinary(&carre);
+            libereBigBinary(&resultat);
+            resultat = temp;
+        }
+        
+        // Si le bit est 1, multiplier par la base
+        if (exp.Tdigits[i] == 1) {
             BigBinary produit = BigBinary_mult(resultat, base);
             BigBinary temp = BigBinary_mod(produit, mod);
             libereBigBinary(&produit);
             libereBigBinary(&resultat);
             resultat = temp;
-        }
-        
-        // Diviser l'exposant par 2
-        exp = exp / 2;
-        
-        // Si on continue, calculer base = base² mod modulo
-        if (exp > 0) {
-            BigBinary carre = BigBinary_mult(base, base);
-            BigBinary tempBase = BigBinary_mod(carre, mod);
-            libereBigBinary(&carre);
-            libereBigBinary(&base);
-            base = tempBase;
         }
     }
     

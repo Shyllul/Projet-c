@@ -16,10 +16,6 @@ void libereBigBinary(BigBinary *nb);
 void afficheBigBinary(BigBinary nb);
 BigBinary creerBigBinaryDepuisChaine(const char *chaine);
 
-//Conversion décimale binaire
-BigBinary creerBigBinaryDepuisDecimal(unsigned long long nombre);
-long long bigBinaryVersDecimal(BigBinary nb);
-
 //Opérations arithmétiques de base
 BigBinary additionBigBinary(BigBinary A, BigBinary B);
 BigBinary soustractionBigBinary(BigBinary A, BigBinary B);
@@ -32,4 +28,4 @@ bool Inferieur(BigBinary A, BigBinary B);
 BigBinary BigBinary_PGCD(BigBinary A, BigBinary B);
 BigBinary BigBinary_mod(BigBinary A, BigBinary B);
 BigBinary BigBinary_mult(BigBinary A, BigBinary B);
-BigBinary BigBinary_expMod(BigBinary M, unsigned int exp, BigBinary mod);
+BigBinary BigBinary_expMod(BigBinary M, BigBinary exp, BigBinary mod);
