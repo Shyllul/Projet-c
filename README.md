@@ -14,6 +14,16 @@ gcc -o project.exe main.c bigbinary.c
 ./project.exe
 ```
 
+## Structure
+
+```c
+struct BigBinary {
+    int *Tdigits;  //Tableau des chiffres binaires (0 ou 1)
+    int Taille;    //Nombre de chiffres
+    int Signe;     //1 = positif, -1 = négatif, 0 = zéro
+};
+```
+
 ## Fonctionnalités
 
 ### Phase 1
