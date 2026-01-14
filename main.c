@@ -4,8 +4,6 @@
 #include <string.h>
 
 int main() {
-    printf("TESTS BIGBINARY - VERSION LONGUE (200+ bits)\n\n");
-    
     //PHASE 1 
     
     //TEST ADDITION : A1 + B1
@@ -112,8 +110,6 @@ int main() {
     libereBigBinary(&EXP_E);
     libereBigBinary(&EXP_N);
     libereBigBinary(&expResult);
-    
-    printf("\nFIN DES TESTS\n");
-    
+
     return 0;
 }
