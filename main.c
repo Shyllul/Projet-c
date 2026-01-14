@@ -48,7 +48,7 @@ int main() {
     BigBinary diff = soustractionBigBinary(A2, B2);
     printf("A - B = ");
     afficheBigBinary(diff);
-    printf("       (%llu)\n", bigBinaryVersDecimal(diff));
+    printf("       (%lld)\n", bigBinaryVersDecimal(diff));
     
     libereBigBinary(&A2);
     libereBigBinary(&B2);

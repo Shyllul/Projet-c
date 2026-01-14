@@ -79,13 +79,13 @@ BigBinary creerBigBinaryDepuisDecimal(unsigned long long nombre) {
 }
 
 // Conversion d'un BigBinary vers un nombre decimal
-unsigned long long bigBinaryVersDecimal(BigBinary nb) {
+long long bigBinaryVersDecimal(BigBinary nb) {
     if (nb.Signe == 0 || nb.Taille == 0) {
         return 0;
     }
     
-    unsigned long long resultat = 0;
-    unsigned long long puissance = 1;
+    long long resultat = 0;
+    long long puissance = 1;
     
     // Parcourir les bits de droite a gauche
     for (int i = nb.Taille - 1; i >= 0; i--) {
@@ -93,6 +93,11 @@ unsigned long long bigBinaryVersDecimal(BigBinary nb) {
             resultat = resultat + puissance;
         }
         puissance = puissance * 2;
+    }
+    
+    // Appliquer le signe négatif si nécessaire
+    if (nb.Signe == -1) {
+        resultat = -resultat;
     }
     
     return resultat;

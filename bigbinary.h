@@ -18,7 +18,7 @@ BigBinary creerBigBinaryDepuisChaine(const char *chaine);
 
 //Conversion décimale binaire
 BigBinary creerBigBinaryDepuisDecimal(unsigned long long nombre);
-unsigned long long bigBinaryVersDecimal(BigBinary nb);
+long long bigBinaryVersDecimal(BigBinary nb);
 
 //Opérations arithmétiques de base
 BigBinary additionBigBinary(BigBinary A, BigBinary B);
